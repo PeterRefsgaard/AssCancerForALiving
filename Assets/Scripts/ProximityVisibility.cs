@@ -16,23 +16,54 @@ public class ProximityVisibility : MonoBehaviour
     public float visibleDistanceMeters = 5f;
     public TextMeshProUGUI distanceText;
 
-
     void Start()
     {
-        StartCoroutine(RequestLocationPermission());
+        StartCoroutine(RequestPermissions());
     }
 
-    IEnumerator RequestLocationPermission()
+    IEnumerator RequestPermissions()
     {
+        // Request CAMERA permission
+        if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
+        {
+            Permission.RequestUserPermission(Permission.Camera);
+            yield return null; // Wait a frame before checking again
+        }
+
+        // Request FINE LOCATION permission
         if (!Permission.HasUserAuthorizedPermission(Permission.FineLocation))
         {
             Permission.RequestUserPermission(Permission.FineLocation);
-            yield break; // Wait for user response and retry if needed
+            yield return null;
         }
 
-        Input.location.Start();
-    }
+        // Wait until both permissions are granted
+        while (!Permission.HasUserAuthorizedPermission(Permission.Camera) ||
+               !Permission.HasUserAuthorizedPermission(Permission.FineLocation))
+        {
+            yield return null;
+        }
 
+        // Start location services
+        Input.location.Start();
+
+        // Optional: Wait until location is initialized
+        int maxWait = 20;
+        while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
+        {
+            yield return new WaitForSeconds(1);
+            maxWait--;
+        }
+
+        if (Input.location.status != LocationServiceStatus.Running)
+        {
+            Debug.LogWarning("Location services failed to start.");
+        }
+        else
+        {
+            Debug.Log("Location services started successfully.");
+        }
+    }
 
     void Update()
     {
@@ -62,21 +93,7 @@ public class ProximityVisibility : MonoBehaviour
             distanceText.text = $"Afstand: {totalDistance:F1} m";
 
         targetObject.SetActive(totalDistance <= visibleDistanceMeters);
-        if (ARSession.state != ARSessionState.SessionTracking)
-        {
-            if (distanceText != null) distanceText.text = "? ARSession not tracking";
-            targetObject.SetActive(false);
-            return;
-        }
-
-        if (earthManager.EarthTrackingState != UnityEngine.XR.ARSubsystems.TrackingState.Tracking)
-        {
-            if (distanceText != null) distanceText.text = "??? GPS not ready (Earth tracking)";
-            targetObject.SetActive(false);
-            return;
-        }
     }
-
 
     double HaversineDistance(double lat1, double lon1, double lat2, double lon2)
     {
