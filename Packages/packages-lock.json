@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.cesium.unity": {
-      "version": "file:C:/Users/Riffert/Downloads/com.cesium.unity-1.15.5.tgz",
+      "version": "file:C:/Users/peter/Downloads/com.cesium.unity-1.15.5.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {
@@ -12,14 +12,15 @@
       }
     },
     "com.google.ar.core.arfoundation.extensions": {
-      "version": "file:C:/Users/Riffert/Downloads/arcore-unity-extensions-1.37.0.tgz",
+      "version": "git+https://github.com/google-ar/arcore-unity-extensions.git#v1.37.0",
       "depth": 0,
-      "source": "local-tarball",
+      "source": "git",
       "dependencies": {
         "com.unity.xr.arfoundation": "4.1.5",
         "com.unity.xr.arcore": "4.1.5",
         "com.unity.xr.arkit": "4.1.5"
-      }
+      },
+      "hash": "c27a931ef21c212686e5abd8bbf4f334a64ec9d5"
     },
     "com.unity.collab-proxy": {
       "version": "2.7.1",
@@ -269,14 +270,15 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.xr.management": {
-      "version": "4.4.0",
-      "depth": 1,
+      "version": "4.5.1",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.modules.vr": "1.0.0",
         "com.unity.modules.xr": "1.0.0",
+        "com.unity.xr.core-utils": "2.2.1",
         "com.unity.modules.subsystems": "1.0.0",
-        "com.unity.xr.legacyinputhelpers": "2.1.7"
+        "com.unity.xr.legacyinputhelpers": "2.1.11"
       },
       "url": "https://packages.unity.com"
     },
